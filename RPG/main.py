@@ -1,8 +1,10 @@
 import pygame
 import random
 import time
+import os
 
 pygame.init()
+
 
 # Screen
 Width = 720
@@ -11,33 +13,33 @@ screen = pygame.display.set_mode((Width, Height))
 pygame.display.set_caption("RPG by Swayam Dhungana")
 
 # Background
-background = pygame.image.load("RPG/assets/background.jpg")
+background = pygame.image.load("assets/background.jpg")
 
 # Player
-playerImg = pygame.image.load("RPG/assets/Sword-Base-Right.png")
+playerImg = pygame.image.load("assets/Sword-Base-Right.png")
 playerX = 330
 playerY = 150
 playerX_change = 0
 playerY_change = 0
 player_change = 0.0333
-playerImgBaseRight = pygame.image.load("RPG/assets/Sword-Base-Right.png")
-playerImgBaseLeft = pygame.image.load("RPG/assets/Sword-Base-Left.png")
-playerImgSwingRight = pygame.image.load("RPG/assets/Sword-Swing-Right.png")
-playerImgSwingLeft = pygame.image.load("RPG/assets/Sword-Swing-Left.png")
+playerImgBaseRight = pygame.image.load("assets/Sword-Base-Right.png")
+playerImgBaseLeft = pygame.image.load("assets/Sword-Base-Left.png")
+playerImgSwingRight = pygame.image.load("assets/Sword-Swing-Right.png")
+playerImgSwingLeft = pygame.image.load("assets/Sword-Swing-Left.png")
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
 
 #Enemy 
 enemyIMG = []
-enemyRight = pygame.image.load("RPG/assets/Skeleton-Right.png")
-enemyLeft = pygame.image.load("RPG/assets/Skeleton-Left.png")
+enemyRight = pygame.image.load("assets/Skeleton-Right.png")
+enemyLeft = pygame.image.load("assets/Skeleton-Left.png")
 enemyX = []
 enemyY = []
 num_of_enemies = 6 
 
 for i in range(num_of_enemies): 
-    enemyIMG.append(pygame.image.load("RPG/assets/Skeleton-Right.png"))
+    enemyIMG.append(pygame.image.load("assets/Skeleton-Right.png"))
     enemyX.append(random.randint(0,640))
     enemyY.append(random.randint(0,280))
 def enemy(x,y,i): 
@@ -57,7 +59,7 @@ def pixel_collision(obj1, obj2, offset1, offset2):
     return False
 
 # Bullet
-bulletImg = pygame.image.load("RPG/assets/bullet.png")
+bulletImg = pygame.image.load("assets/bullet.png")
 bulletX = 0
 bulletY = 0
 bullet_state = "ready"  # "ready" means the bullet is not on the screen, "fire" means it's moving
@@ -87,6 +89,10 @@ collision_flag = False
 hit = False 
 
 game_over_font = pygame.font.Font('freesansbold.ttf', 64)
+
+#Background Music 
+pygame.mixer.music.load("Sounds/background.mp3")
+pygame.mixer.play()
 
 running = True
 while running:
