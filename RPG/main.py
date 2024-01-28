@@ -13,33 +13,33 @@ screen = pygame.display.set_mode((Width, Height))
 pygame.display.set_caption("RPG by Swayam Dhungana")
 
 # Background
-background = pygame.image.load("assets/background.jpg")
+background = pygame.image.load("RPG/assets/background.jpg")
 
 # Player
-playerImg = pygame.image.load("assets/Sword-Base-Right.png")
+playerImg = pygame.image.load("RPG/assets/Sword-Base-Right.png")
 playerX = 330
 playerY = 150
 playerX_change = 0
 playerY_change = 0
 player_change = 0.0333
-playerImgBaseRight = pygame.image.load("assets/Sword-Base-Right.png")
-playerImgBaseLeft = pygame.image.load("assets/Sword-Base-Left.png")
-playerImgSwingRight = pygame.image.load("assets/Sword-Swing-Right.png")
-playerImgSwingLeft = pygame.image.load("assets/Sword-Swing-Left.png")
+playerImgBaseRight = pygame.image.load("RPG/assets/Sword-Base-Right.png")
+playerImgBaseLeft = pygame.image.load("RPG/assets/Sword-Base-Left.png")
+playerImgSwingRight = pygame.image.load("RPG/assets/Sword-Swing-Right.png")
+playerImgSwingLeft = pygame.image.load("RPG/assets/Sword-Swing-Left.png")
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
 
 #Enemy 
 enemyIMG = []
-enemyRight = pygame.image.load("assets/Skeleton-Right.png")
-enemyLeft = pygame.image.load("assets/Skeleton-Left.png")
+enemyRight = pygame.image.load("RPG/assets/Skeleton-Right.png")
+enemyLeft = pygame.image.load("RPG/assets/Skeleton-Left.png")
 enemyX = []
 enemyY = []
 num_of_enemies = 6 
 
 for i in range(num_of_enemies): 
-    enemyIMG.append(pygame.image.load("assets/Skeleton-Right.png"))
+    enemyIMG.append(pygame.image.load("RPG/assets/Skeleton-Right.png"))
     enemyX.append(random.randint(0,640))
     enemyY.append(random.randint(0,280))
 def enemy(x,y,i): 
@@ -59,7 +59,7 @@ def pixel_collision(obj1, obj2, offset1, offset2):
     return False
 
 # Bullet
-bulletImg = pygame.image.load("assets/bullet.png")
+bulletImg = pygame.image.load("RPG/assets/bullet.png")
 bulletX = 0
 bulletY = 0
 bullet_state = "ready"  # "ready" means the bullet is not on the screen, "fire" means it's moving
@@ -91,17 +91,29 @@ hit = False
 game_over_font = pygame.font.Font('freesansbold.ttf', 64)
 
 #Background Music 
-pygame.mixer.music.load("Sounds/background.mp3")
-pygame.mixer.play()
+bg_music = pygame.mixer.Sound("RPG/Sounds/background.mp3")
+bg_music.play(loops=-1).set_volume(0.1)
+
+#Load Sounds 
+gun_shot_sound = pygame.mixer.Sound("RPG/Sounds/plop.mp3")
+sword_swing_sound = pygame.mixer.Sound("RPG/Sounds/sword.mp3")
+hit_sound = pygame.mixer.Sound("RPG/Sounds/hit.mp3")
+game_over_sound = pygame.mixer.Sound("RPG/Sounds/gameOver.mp3")
+game_over_sound.set_volume(0.2)
+
+game_over = False 
 
 running = True
 while running:
  # If lives reach zero, display game over screen
     if lives <= 0:
-        screen.fill((0, 0, 0))  # Fill the screen with a black color
-
+        screen.fill((0, 0, 0))# Fill the screen with a black color
+        bg_music.stop() # Stops the background music
+        if game_over == False: 
+            game_over_sound.play() #plays the game over sound
         game_over_text = game_over_font.render("Game Over", True, (255, 255, 255))
-        screen.blit(game_over_text, (Width // 2 - 150, Height // 2 - 32))
+        screen.blit(game_over_text, (Width // 2 - 170, Height // 2 - 32))
+        game_over = True 
 
         pygame.display.update()
 
@@ -136,6 +148,7 @@ while running:
             if event.key == pygame.K_SPACE:
                 is_swinging = True
                 hit = True
+                sword_swing_sound.play().set_volume(0.2)
                 if playerImg == playerImgBaseRight:
                     playerImg = playerImgSwingRight
                 elif playerImg == playerImgBaseLeft:
@@ -205,6 +218,7 @@ while running:
         if current_time - bullet_timer > random.uniform(min_interval, max_interval):
             if bullet_state == "ready":
                 bullet_velocity = fire_bullet(enemyX[i], enemyY[i], playerX, playerY)
+                gun_shot_sound.play().set_volume(0.2)
                 bullet_timer = current_time
 
     # Move the bullet
@@ -215,7 +229,8 @@ while running:
 
         # Collision detection with the player
         if pixel_collision(bulletImg, playerImg, (bulletX, bulletY), (playerX, playerY)):
-            print("Player is hit!")
+            print("player is hit")
+            hit_sound.play().set_volume(0.2)
             lives -= 1 
             bullet_state = "ready"  # Reset the bullet
             
